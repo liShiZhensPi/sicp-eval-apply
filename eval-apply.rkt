@@ -46,3 +46,20 @@
       (eval (if-alternative exp) env)))
 
 ;;序列
+(define (eval-sequence exps env)
+  (cond ((last-exp? exps) (eval (first-exp exps) env))
+        ((else (eval (first-exp exps) env)
+               (eval-sequence (rest-exps) env)))))
+
+;;赋值和定义
+(define (eval-assignment exp env)
+  (set-variable-value! (assignment-variable exp)
+                       (eval (assignment-value exp) env)
+                       env)
+  'ok)
+
+(define (eval-definition exp env)
+  (define-variable! (definition-variable exp)
+    (eval (definition-value exp) env)
+    env)
+  'ok)
